@@ -1,0 +1,9 @@
+// Fazer 20 casos de teste em um .txt
+/*
+* Cada um com
+* taxa de proporção do lucro desejado P
+* nº de cidades a ser considerada N (5<=N<=20)
+* nº de ligações rodoviárias E (0<=E<=9900)
+* taxa de lucro esperada T (1<=T<=100)
+* matriz adjacente que representa a ligação rodoviária direta entre duas cidades e contem as despesas e receitas desta ligação
+*/
