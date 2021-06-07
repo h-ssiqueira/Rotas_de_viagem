@@ -28,54 +28,16 @@
 
 #define MAX_CIDADES 20
 
-typedef struct aresta{
-	int receita, despesa;
-	struct aresta *prox;
-}aresta;
-
-typedef struct vertice{
-	int num_arestas;
-	aresta *conexoes;
-}vert;
-
-//Desaloca Grafo
-void desaloca_grafo(aresta *lista){
-	if(!lista)
-		printf("\nLista Vazia");
-	aresta *prox = NULL;
-	while(lista->prox != NULL){
-		prox = (lista)->prox;
-		free(lista);
-		lista = prox;
-	}
-}
-
-// Insere um novo caminho entre duas cidades
-void insere_aresta(aresta **lista, int receita, int despesa){
-	aresta *novo = calloc(1,sizeof(aresta));
-	novo->despesa = despesa;
-	novo->receita = receita;
-	novo->prox = NULL;
-	if(!(*lista))
-		*lista = novo;
-	else{
-		novo->prox = *lista;
-		*lista = novo;
-	}
-}
-
 // Desaloca as listas internas e zera a quantidade de caminhos de cada vértice da matriz
-void zera_matriz(vert **MA, int tam){
+void zera_matriz(float **MA, int tam){
 	for(int i = 0; i < tam; i++){
 		for(int j = 0; j < tam; j++){
-			if(MA[i][j].conexoes != NULL)
-				desaloca_grafo(MA[i][j].conexoes);
-			MA[i][j].num_arestas = 0;
+			MA[i][j] = -1.0;
 		}
 	}
 }
 //solução que calcule o ciclo com maior proporção de lucro (Receitas totais / Despesas totais)
-float calcula_prop(aresta *A){
+/*float calcula_prop(int receita, int despesa){
 	float maior,des;
 	if(A != NULL){
 		maior = ((float)(A->receita) / A->despesa);
@@ -86,10 +48,10 @@ float calcula_prop(aresta *A){
 		}
 	}
 	return des;//Retorna maior porporção
-}
+}*/
 
 // Exibe os resultados e grava em um arquivo txt
-void resultados(int ciclos, int proporcaoP, int lucroP, int n_caso){
+void resultados(int ciclos, float proporcaoP, float lucroP, int n_caso){
 	FILE *resultado;
 	int res;
 	printf("\n\nCaso número %d\n%2d Rotas cíclicas\nProporção de lucro %.2f\n\n", n_caso,ciclos, lucroP / proporcaoP);
@@ -106,7 +68,7 @@ void resultados(int ciclos, int proporcaoP, int lucroP, int n_caso){
 	fclose(resultado);
 }
 
-void encontra_ciclo(vert **MA, int tam){
+void encontra_ciclo(float **MA, int tam){
 	// BFS
 	// Floyd's tortoise and hare
 }
@@ -115,7 +77,7 @@ void encontra_ciclo(vert **MA, int tam){
 int main(int argc, char **argv){
 
 
-	vert MA[MAX_CIDADES][MAX_CIDADES];
+	float MA[MAX_CIDADES][MAX_CIDADES];
 
 	//Alocar matriz
 	zera_matriz(MA,20);
@@ -150,8 +112,8 @@ int main(int argc, char **argv){
 
 		for(int c=0;c<n_caminhos;c++){
 			fscanf(casos_de_teste,"%d %d %d %d\n",&orig,&dest,&lucro,&desp); // Pra cada caminho(aresta) pega: origem,destino,lucro, despesa
-			MA[orig][dest].num_arestas+=1; //Incrementa quantidade de caminhos
-			insere_aresta(MA[orig][dest].conexoes,lucro,desp); //Inserir aresta na lista da MA
+			//MA[orig][dest].num_arestas+=1; //Incrementa quantidade de caminhos
+			//insere_aresta(MA[orig][dest].conexoes,lucro,desp); //Inserir aresta na lista da MA
 		}
 
 
