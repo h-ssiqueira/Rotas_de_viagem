@@ -1,4 +1,4 @@
 *.o
-resultados.txt
+*.out
 .vscode/launch.json
 .vscode/settings.json
