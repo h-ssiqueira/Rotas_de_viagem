@@ -1,5 +1,6 @@
+
+
 Caso número 9
- 0 Rotas cíclicas
-Proporção de lucro 0.00
-
-
+12 Rotas cíclicas
+Proporção de lucro desejada 4.00
+Melhor proporção de lucro encontrada 13.06

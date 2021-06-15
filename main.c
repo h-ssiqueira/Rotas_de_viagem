@@ -38,8 +38,6 @@ typedef struct caminho{
 }Caminho;
 
 
-
-
 // Funções Lista
 
 // Exibe o caminho do ciclo e sua respectiva proporção
@@ -136,27 +134,50 @@ float melhor_proporcao(Caminho *caminhos, int *ciclos){
 }
 
 // Exibe os resultados e grava em um arquivo txt
-void resultados(Caminho *caminhos, float P_arq, int n_caso){
+bool resultados(Caminho *caminhos, float P_arq, int n_caso){
 	FILE *resultado;
 	int res, n_ciclos;
-	float P = melhor_proporcao(caminhos,&n_ciclos) / P_arq;
+	float melhorProp = melhor_proporcao(caminhos,&n_ciclos);
 
-	printf("\n\nCaso número %d\n%2d Rotas cíclicas\nProporção de lucro %.2f\n\n", n_caso,n_ciclos, P);
-	resultado = fopen("resultados.txt","a");
-	if(!resultado){
-		printf("Falha ao abrir/criar o arquivo");
-		exit(1);
+
+	if(melhorProp >= P_arq){
+		printf("\n\nCaso número %d\n%2d Rotas cíclicas\nProporção de lucro desejada %.2f\nMelhor proporção de lucro encontrada %.2f\n", n_caso,n_ciclos, P_arq,melhorProp);
+		resultado = fopen("resultados.txt","a");
+		if(!resultado){
+			printf("Falha ao abrir/criar o arquivo");
+			exit(1);
+		}
+
+
+		res = fprintf(resultado,"\n\nCaso número %d\n%2d Rotas cíclicas\nProporção de lucro desejada %.2f\nMelhor proporção de lucro encontrada %.2f\n", n_caso,n_ciclos, P_arq,melhorProp);
+		if(res == EOF){
+			printf("\n\nErro na gravação dos dados no arquivo\n");
+			exit(1);
+		}
+		fclose(resultado);
+		return true;
+	}else{
+		printf("\n\nCaso número %d\nSem rotas encontradas para a proporção de lucro desejada! (P=%.2f) :(\n",n_caso,P_arq);
+		FILE *resultado;
+		resultado = fopen("resultados.txt","a");
+		if(!resultado){
+			printf("Falha ao abrir/criar o arquivo");
+			exit(1);
+		}
+
+		int res = fprintf(resultado,"\n\nCaso número %d\nSem rotas encontradas para a proporção de lucro desejada! (P=%.2f) :(\n",n_caso,P_arq);
+		if(res == EOF){
+			printf("\n\nErro na gravação dos dados no arquivo\n");
+			exit(1);
+		}
+		fclose(resultado);
+		return false;
 	}
-	res = fprintf(resultado,"Caso número %d\n%2d Rotas cíclicas\nProporção de lucro %.2f\n\n\n", n_caso,n_ciclos, P);
-	if(res == EOF){
-		printf("\n\nErro na gravação dos dados no arquivo\n");
-		exit(1);
-	}
-	fclose(resultado);
+	
 }
 
 // Exibe a matriz de adjacência para testes
-void print_matriz(float MA[][20], int tam){
+void print_matriz(float MA[][MAX_CIDADES], int tam){
 	printf("\n\n     ");
 	for(int i = 0; i < tam; i++)
 		printf("  %2d  ", i);
@@ -203,7 +224,7 @@ void exclui_repetidos(Caminho **caminhos){
 }
 
 // Pode retornar se houve ciclo / custo do ciclo / vetor com os vértices do ciclo
-void encontra_ciclo(float MA[][20], int tam,Caminho **listaCaminhos){
+void encontra_ciclos(float MA[][MAX_CIDADES], int tam,Caminho **listaCaminhos){
 	// 1 Inicialize L como uma pilha vazia e uma estrutura para armazenar os caminhos
 	int i,j,k,cont = 1/*,cont2=1*/;
 	float propP = 0.0;
@@ -292,11 +313,11 @@ int main(int argc, char **argv){
 
 	// Leitura do arquivo de casos de teste
 	FILE *casos_de_teste;
-	int n_caso,proporcaoP,n_cidades,n_caminhos;
+	int n_caso,n_cidades,n_caminhos;
 	int orig,dest,lucro,desp;
 	// Variáveis para manipulação do grafo
 	int n_ciclos;
-	float proporcaoG;
+	float proporcaoG,proporcaoP;
 	Caminho *caminhos = NULL;
 
 
@@ -317,7 +338,7 @@ int main(int argc, char **argv){
 	}
 
 	//Ate o fim do arquivo
-	while(fscanf(casos_de_teste,"%d\n%d\n%d\n%d\n",&n_caso,&proporcaoP,&n_cidades,&n_caminhos) != EOF){
+	while(fscanf(casos_de_teste,"%d\n%f\n%d\n%d\n",&n_caso,&proporcaoP,&n_cidades,&n_caminhos) != EOF){
 		// Pega a primeira linha <n_caso>
 		// Pega a proporcao P
 		// Pega a quantidade de cidades (vertices)
@@ -335,18 +356,17 @@ int main(int argc, char **argv){
 		}
 
 		// Para testes
-		print_matriz(MA,n_cidades);
-
+		// print_matriz(MA,n_cidades);
 
 		// Algoritmo de busca de ciclo (loop entre os vértices? Pode retornar se encontrou ciclo (problema de duplicidade) ou o lucro do ciclo)
-		encontra_ciclo(MA, n_cidades, &caminhos);
-	
-		exclui_repetidos(&caminhos);
-		printf("%d Ciclos encontrados---\n\n",printCaminho(caminhos));
+		encontra_ciclos(MA, n_cidades, &caminhos);
 		
 		resultados(caminhos, proporcaoP, n_caso);
+		
 		remove_caminhos(&caminhos);
 	}
+
+	
 
 	fclose(casos_de_teste);
 	return 0;
