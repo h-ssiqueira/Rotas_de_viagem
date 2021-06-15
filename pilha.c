@@ -11,7 +11,7 @@ int tamanhoPilha(Pilha *p){
         res++;
 
     return res;
-}         
+}
 
 
 //Remove elementos da pilha

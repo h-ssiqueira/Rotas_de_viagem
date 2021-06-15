@@ -33,7 +33,7 @@
 // Estrutura que armazena os caminhos de ciclos e suas proporções
 typedef struct caminho{
 	Pilha *p;
-	float prop;
+	double prop;
 	struct caminho *prox;
 }Caminho;
 
@@ -45,14 +45,14 @@ int printCaminho(Caminho *c){
 	int count=0;
 	for(Caminho *i = c; i != NULL; i = i->prox){
 		printPilha(i->p);
-		printf("\n%.2f\n\n",i->prop);
+		printf("\n%.2lf\n\n",i->prop);
 		count++;
 	}
 	return count;
 }
 
 // Insere o registro de um ciclo
-void insere_caminho(Caminho **L, Pilha *no, float proporcao){
+void insere_caminho(Caminho **L, Pilha *no, double proporcao){
 	Caminho *novo = calloc(1,sizeof(Caminho));
 	if(!novo){
 		printf("\nErro na alocação do caminho");
@@ -112,7 +112,7 @@ bool caminho_repetido(Caminho *C, Pilha *p){
 
 
 // Desaloca as listas internas e zera a quantidade de caminhos de cada vértice da matriz
-void zera_matriz(float MA[][20], int tam){
+void zera_matriz(double MA[][20], int tam){
 	for(int i = 0; i < tam; i++){
 		for(int j = 0; j < tam; j++){
 			MA[i][j] = -1.0;
@@ -122,8 +122,8 @@ void zera_matriz(float MA[][20], int tam){
 
 // Retorna a melhor proporcao dentre os ciclos
 // Calcula a quantidade de ciclos
-float melhor_proporcao(Caminho *caminhos, int *ciclos){
-	float melhorProp = 0.0;
+double melhor_proporcao(Caminho *caminhos, int *ciclos){
+	double melhorProp = 0.0;
 	*ciclos = 0;
 	while(caminhos){
 		melhorProp = melhorProp < caminhos->prop ? caminhos->prop : melhorProp;
@@ -134,14 +134,14 @@ float melhor_proporcao(Caminho *caminhos, int *ciclos){
 }
 
 // Exibe os resultados e grava em um arquivo txt
-bool resultados(Caminho *caminhos, float P_arq, int n_caso){
+bool resultados(Caminho *caminhos, double P_arq, int n_caso){
 	FILE *resultado;
 	int res, n_ciclos;
-	float melhorProp = melhor_proporcao(caminhos,&n_ciclos);
+	double melhorProp = melhor_proporcao(caminhos,&n_ciclos);
 
 
 	if(melhorProp >= P_arq){
-		printf("\n\nCaso número %d\n%2d Rotas cíclicas\nProporção de lucro desejada %.2f\nMelhor proporção de lucro encontrada %.2f\n", n_caso,n_ciclos, P_arq,melhorProp);
+		printf("\n\nCaso número %d\n%2d Rotas cíclicas\nProporção de lucro desejada %.2lf\nMelhor proporção de lucro encontrada %.2lf\nRelação lucro encontrado com o esperado %.2lf\n", n_caso,n_ciclos, P_arq,melhorProp, melhorProp / P_arq);
 		resultado = fopen("resultados.txt","a");
 		if(!resultado){
 			printf("Falha ao abrir/criar o arquivo");
@@ -149,7 +149,7 @@ bool resultados(Caminho *caminhos, float P_arq, int n_caso){
 		}
 
 
-		res = fprintf(resultado,"\n\nCaso número %d\n%2d Rotas cíclicas\nProporção de lucro desejada %.2f\nMelhor proporção de lucro encontrada %.2f\n", n_caso,n_ciclos, P_arq,melhorProp);
+		res = fprintf(resultado,"\n\nCaso número %d\n%2d Rotas cíclicas\nProporção de lucro desejada %.2lf\nMelhor proporção de lucro encontrada %.2lf\nRelação lucro encontrado com o esperado %.2lf\n", n_caso,n_ciclos, P_arq,melhorProp, melhorProp / P_arq);
 		if(res == EOF){
 			printf("\n\nErro na gravação dos dados no arquivo\n");
 			exit(1);
@@ -157,7 +157,7 @@ bool resultados(Caminho *caminhos, float P_arq, int n_caso){
 		fclose(resultado);
 		return true;
 	}else{
-		printf("\n\nCaso número %d\nSem rotas encontradas para a proporção de lucro desejada! (P=%.2f) :(\n",n_caso,P_arq);
+		printf("\n\nCaso número %d\nSem rotas encontradas para a proporção de lucro desejada! (P=%.2lf) :(\n",n_caso,P_arq);
 		FILE *resultado;
 		resultado = fopen("resultados.txt","a");
 		if(!resultado){
@@ -165,7 +165,7 @@ bool resultados(Caminho *caminhos, float P_arq, int n_caso){
 			exit(1);
 		}
 
-		int res = fprintf(resultado,"\n\nCaso número %d\nSem rotas encontradas para a proporção de lucro desejada! (P=%.2f) :(\n",n_caso,P_arq);
+		int res = fprintf(resultado,"\n\nCaso número %d\nSem rotas encontradas para a proporção de lucro desejada! (P=%.2lf) :(\n",n_caso,P_arq);
 		if(res == EOF){
 			printf("\n\nErro na gravação dos dados no arquivo\n");
 			exit(1);
@@ -173,11 +173,11 @@ bool resultados(Caminho *caminhos, float P_arq, int n_caso){
 		fclose(resultado);
 		return false;
 	}
-	
+
 }
 
 // Exibe a matriz de adjacência para testes
-void print_matriz(float MA[][MAX_CIDADES], int tam){
+void print_matriz(double MA[][MAX_CIDADES], int tam){
 	printf("\n\n     ");
 	for(int i = 0; i < tam; i++)
 		printf("  %2d  ", i);
@@ -185,13 +185,13 @@ void print_matriz(float MA[][MAX_CIDADES], int tam){
 	for(int i = 0; i < tam; i++){
 		printf("%2d   ", i);
 		for(int j = 0; j < tam; j++)
-			printf("%5.2f ", MA[i][j]);
+			printf("%.2lf ", MA[i][j]);
 		printf("\n");
 	}
 	printf("\n\n");
 }
 
-// Exclui os caminhos repetidos da lsita encadeada
+// Exclui os caminhos repetidos da lista encadeada
 void exclui_repetidos(Caminho **caminhos){
 	Caminho *atual, *aux=*caminhos;
 	Caminho *caminhosASalvar=NULL;
@@ -207,7 +207,6 @@ void exclui_repetidos(Caminho **caminhos){
 				printf("\n#2");
 				printPilha(aux->p);
 				printf("_____________________________\n");
-
 				if(atual->prop > aux->prop){
 					insere_caminho(&caminhosASalvar,atual->p,atual->prop);
 				}
@@ -219,15 +218,15 @@ void exclui_repetidos(Caminho **caminhos){
 	}
 	remove_caminhos(&(*caminhos)); //TODO
 	caminhos=&caminhosASalvar;
-	
-	
+
+
 }
 
 // Pode retornar se houve ciclo / custo do ciclo / vetor com os vértices do ciclo
-void encontra_ciclos(float MA[][MAX_CIDADES], int tam,Caminho **listaCaminhos){
+void encontra_ciclos(double MA[][MAX_CIDADES], int tam,Caminho **listaCaminhos){
 	// 1 Inicialize L como uma pilha vazia e uma estrutura para armazenar os caminhos
-	int i,j,k,cont = 1/*,cont2=1*/;
-	float propP = 0.0;
+	int i,j,k/*,cont = 1,cont2=1,c*/;
+	double propP = 0.0;
 	Pilha *topo = inicializa();
 	// 2 Insira o nó atual na pilha e verifique se o nó é igual ao início da pilha, se for igual, há um ciclo fechado (guarda o caminho*** e verifica a proporção), senão verifica se algum outro nó da pilha é igual, se for igual, ciclo aberto, retira o nó (descontar a proporção) e parte para outro, senão continua o algoritmo
 	for(i = 0; i < tam; i++){ // Loop dos vértices
@@ -237,18 +236,21 @@ void encontra_ciclos(float MA[][MAX_CIDADES], int tam,Caminho **listaCaminhos){
 		k = i;
 		j = 0;
 		propP = 0.0;
+		//printf("\n\nInicia no V%d\n\n",i);
+		//cont2=0;
+		//c=0;
 		while(topo != NULL){
-
 			for(; j < tam; j++){ // 3 Dentro do nó, verifique se há algum arco de saída, se sim, vá para o passo 4, senão pule para o passo 5
 				if(MA[k][j] > -1.0){ // 4 Escolha um arco de saída e siga para obter o próximo nó atual
 					push(&topo, j);
 					//printf("push  %d",j);
 					//printPilha(topo);
-					propP += MA[k][j];
+					//printf("\n\n%d Proporcao= propAtual=%.2lf + MA=%.2lf\n",cont2,propP,MA[k][j]);
+					//printPilha(topo);
+					//cont2++;
 					// Verifica o vértice inserido na pilha se existe
 					switch(verifica(topo,j)){
 						case 1: // Ciclo fechado: verifica se existe o caminho, se não existir salvar caminho, se existir, retira o nó da pilha
-
 							//printf("\nCiclo fechado #%d________\n\n",cont);
 							//cont++;
 							//printPilha(topo);
@@ -258,10 +260,10 @@ void encontra_ciclos(float MA[][MAX_CIDADES], int tam,Caminho **listaCaminhos){
 							//printf("\n_____________________________________\n\n");
 
 							//if(!caminho_repetido(*listaCaminhos,topo)){ //*** Verifica se existe o caminho antes de guardar
+								propP += MA[k][j];
 								insere_caminho(&(*listaCaminhos),topo,propP); //Adiciona na lista o caminho, se não for repetido
 								//printf("Ciclo inserido");
 							//}
-
 							// Se existe, retira o vértice e continua
 							propP -= MA[k][j];
 							j = topo->i;
@@ -271,13 +273,11 @@ void encontra_ciclos(float MA[][MAX_CIDADES], int tam,Caminho **listaCaminhos){
 							k = topo->i;
 							break;
 						case -1: // Ciclo aberto (caminho com o ciclo + vértices iniciais), retira o nó que acabou de ser inserido, se for a base o algoritmo acaba as interações para este vértice
-
 							//printf("\n\n__________Ciclo aberto encontrado___________\n\n");
 							// printf("\n\nCiclo aberto #%d________\n\n",cont2);
 							// cont2++;
 							// printPilha(topo);
 							// printf("\n____________________________________\n\n");
-							propP -= MA[k][j];
 							j = topo->i;
 							pop(&topo);
 							if(!topo)
@@ -285,6 +285,7 @@ void encontra_ciclos(float MA[][MAX_CIDADES], int tam,Caminho **listaCaminhos){
 							k = topo->i;
 							break;
 						case 0: // Não houve repetições, continua normalmente
+							propP += MA[k][j];
 							k = j;
 							j = -1;
 							break;
@@ -293,13 +294,13 @@ void encontra_ciclos(float MA[][MAX_CIDADES], int tam,Caminho **listaCaminhos){
 						break;
 				}
 			}
+			j = k;
+			pop(&topo); // O final foi alcançado, remova o nó e volte para o anterior, se for o nó inicial não há ciclos e o algoritmo terminará
 			if(!topo)
 				break;
-			propP -= MA[k][j]; // O final foi alcançado, remova o nó e volte para o anterior, se for o nó inicial não há ciclos e o algoritmo terminará
-			j = topo->i + 1;
-			pop(&topo);
-			if(topo != NULL)
-				k = topo->i;
+			k = topo->i;
+			propP -= MA[k][j];
+			j++;
 		}
 	}
 }
@@ -308,16 +309,17 @@ void encontra_ciclos(float MA[][MAX_CIDADES], int tam,Caminho **listaCaminhos){
 int main(int argc, char **argv){
 
 	// Matriz de adjacência
-	float MA[MAX_CIDADES][MAX_CIDADES];
+	double MA[MAX_CIDADES][MAX_CIDADES];
 
 
 	// Leitura do arquivo de casos de teste
 	FILE *casos_de_teste;
 	int n_caso,n_cidades,n_caminhos;
-	int orig,dest,lucro,desp;
+	int orig,dest;
+	double lucro,desp;
 	// Variáveis para manipulação do grafo
 	int n_ciclos;
-	float proporcaoG,proporcaoP;
+	double proporcaoG,proporcaoP;
 	Caminho *caminhos = NULL;
 
 
@@ -338,7 +340,7 @@ int main(int argc, char **argv){
 	}
 
 	//Ate o fim do arquivo
-	while(fscanf(casos_de_teste,"%d\n%f\n%d\n%d\n",&n_caso,&proporcaoP,&n_cidades,&n_caminhos) != EOF){
+	while(fscanf(casos_de_teste,"%d\n%lf\n%d\n%d\n",&n_caso,&proporcaoP,&n_cidades,&n_caminhos) != EOF){
 		// Pega a primeira linha <n_caso>
 		// Pega a proporcao P
 		// Pega a quantidade de cidades (vertices)
@@ -350,9 +352,9 @@ int main(int argc, char **argv){
 		// Aloca as posições na matriz
 
 		for(int c=0;c<n_caminhos;c++){
-			fscanf(casos_de_teste,"%d %d %d %d\n",&orig,&dest,&lucro,&desp); // Pra cada caminho(aresta) pega: origem,destino,lucro, despesa
-			if(MA[orig][dest] < (float) lucro / desp)
-				MA[orig][dest] = (float) lucro / desp;
+			fscanf(casos_de_teste,"%d %d %lf %lf\n",&orig,&dest,&lucro,&desp); // Pra cada caminho(aresta) pega: origem,destino,lucro, despesa
+			if(MA[orig][dest] < (lucro / desp))
+				MA[orig][dest] =  (lucro / desp);
 		}
 
 		// Para testes
@@ -360,13 +362,13 @@ int main(int argc, char **argv){
 
 		// Algoritmo de busca de ciclo (loop entre os vértices? Pode retornar se encontrou ciclo (problema de duplicidade) ou o lucro do ciclo)
 		encontra_ciclos(MA, n_cidades, &caminhos);
-		
+
 		resultados(caminhos, proporcaoP, n_caso);
-		
+		//printCaminho(caminhos);
 		remove_caminhos(&caminhos);
 	}
 
-	
+
 
 	fclose(casos_de_teste);
 	return 0;

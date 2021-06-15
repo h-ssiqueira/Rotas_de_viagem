@@ -1,6 +1,57 @@
 
 
-Caso número 9
+Caso número 1
+Sem rotas encontradas para a proporção de lucro desejada! (P=3.00) :(
+
+
+Caso número 2
+Sem rotas encontradas para a proporção de lucro desejada! (P=4.00) :(
+
+
+Caso número 3
+13 Rotas cíclicas
+Proporção de lucro desejada 12.00
+Melhor proporção de lucro encontrada 42.05
+Relação lucro encontrado com o esperado 3.50
+
+
+Caso número 4
+40 Rotas cíclicas
+Proporção de lucro desejada 5.00
+Melhor proporção de lucro encontrada 15.03
+Relação lucro encontrado com o esperado 3.01
+
+
+Caso número 5
+ 4 Rotas cíclicas
+Proporção de lucro desejada 3.00
+Melhor proporção de lucro encontrada 49.98
+Relação lucro encontrado com o esperado 16.66
+
+
+Caso número 6
+ 2 Rotas cíclicas
+Proporção de lucro desejada 1.00
+Melhor proporção de lucro encontrada 2.26
+Relação lucro encontrado com o esperado 2.26
+
+
+Caso número 7
 12 Rotas cíclicas
 Proporção de lucro desejada 4.00
-Melhor proporção de lucro encontrada 13.06
+Melhor proporção de lucro encontrada 20.67
+Relação lucro encontrado com o esperado 5.17
+
+
+Caso número 8
+76 Rotas cíclicas
+Proporção de lucro desejada 5.00
+Melhor proporção de lucro encontrada 12.09
+Relação lucro encontrado com o esperado 2.42
+
+
+Caso número 9
+320 Rotas cíclicas
+Proporção de lucro desejada 4.00
+Melhor proporção de lucro encontrada 14.48
+Relação lucro encontrado com o esperado 3.62
