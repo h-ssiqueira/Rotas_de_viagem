@@ -4,16 +4,6 @@
 #include "pilha.h"
 
 
-
-int tamanhoPilha(Pilha *p){
-    int res=0;
-    for(Pilha *i = p; i != NULL; i = i->prox)
-        res++;
-
-    return res;
-}
-
-
 //Remove elementos da pilha
 bool pop(Pilha **topo){
     if(!*topo)
@@ -60,30 +50,8 @@ int verifica(Pilha *p, int vertice){
     return 0; // Não possui duplicidades
 }
 
-//Compara pilha
-bool compara_pilha(Pilha *P1, Pilha *P2){
-    Pilha *aux;
-    bool flag = false;
-    if(tamanhoPilha(P1) != tamanhoPilha(P2))
-        return false;
-    else{
-        while(P1 != NULL){ // Roda pilha p1
-            aux = P2;
-            flag = false;
-            while(aux != NULL){ // Roda na pilha p2 pra ver se tem igual
-                if(aux->i == P1->i)
-                    flag = true; // Achou igual
-                aux = aux->prox;
-            }
-            if(!flag) // Não achou nenhum igual
-                return false;
-            P1 = P1->prox;
-        }
-        return true;
-    }
-
-}
-
+// Printa a Pilha
+// DEBUG
 void printPilha(Pilha *p){
     printf("\n");
     for(Pilha *i = p; i != NULL; i = i->prox)
